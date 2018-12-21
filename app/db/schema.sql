@@ -1,0 +1,11 @@
+CREATE DATABASE friends_db;
+
+USE friends_db;
+
+CREATE TABLE profiles (
+id INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(25) NOT NULL,
+photo VARCHAR(255) NOT  NULL,
+scores VARCHAR(25) NOT NULL,
+PRIMARY KEY (id)
+);
