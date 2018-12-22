@@ -27,12 +27,61 @@ module.exports = function (app) {
             if (err) throw err;
             var data = JSON.stringify(result);
             data = JSON.parse(data);
-            console.log(data);
+            // console.log(data);
             for (i = 0; i < data.length; i++) {
                 data[i].scores = data[i].scores.split(",");
             }
             return res.json(data);
         });
+
     });
-};
+
+
+
+    app.post("/api/friends", function (req, res) {
+
+        var scores = req.body.scores.toString();
+
+        connection.query("SELECT * FROM profiles", function (err, result) {
+            if (err) throw err;
+            var data = JSON.stringify(result);
+            data = JSON.parse(data);
+            var scoresArray = [];
+            var value = 0;
+            var newScores = req.body.scores;
+            console.log(newScores);
+            var totalDifference = 0;
+            for (i = 0; i < data.length; i++) {
+                data[i].scores = data[i].scores.split(",");
+            }
+            for (i = 0; i < data.length; i++) {
+                for (j = 0; j < data[i].scores.length; j++) {
+                    totalDifference += Math.abs(parseInt(data[i].scores[j]) - parseInt(newScores[j]));
+                }
+                console.log(totalDifference);
+
+                scoresArray.push(totalDifference);
+                totalDifference = 0;
+            }
+            console.log(scoresArray);
+            for (var i = 0; i < scoresArray.length; i++) {
+                if (scoresArray[i] <= scoresArray[value]) {
+                    value = i;
+
+                }
+            }
+            console.log(data[value]);
+            res.json(data[value]);
+
+        });
+        connection.query("INSERT INTO profiles (name, photo, scores) VALUES (?, ?, ?)", [req.body.name, req.body.photo, scores], function (err, result) {
+            if (err) {
+                return res.status(500).end();
+            }
+        });
+
+
+    });
+}
+
 
